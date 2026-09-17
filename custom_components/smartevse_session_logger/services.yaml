@@ -1,0 +1,37 @@
+export_csv:
+  fields:
+    config_entry_id:
+      required: false
+      example: "01J..."
+      selector:
+        config_entry:
+          integration: smartevse_session_logger
+    period:
+      required: false
+      example: "last_month"
+      selector:
+        select:
+          options:
+            - "last_7_days"
+            - "last_30_days"
+            - "this_month"
+            - "last_month"
+            - "this_year"
+            - "last_year"
+    start_date:
+      required: false
+      selector:
+        date: {}
+    end_date:
+      required: false
+      selector:
+        date: {}
+
+force_reconciliation:
+  fields:
+    config_entry_id:
+      required: false
+      example: "01J..."
+      selector:
+        config_entry:
+          integration: smartevse_session_logger

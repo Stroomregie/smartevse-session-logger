@@ -1,0 +1,144 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect your SmartEVSE",
+        "description": "Pick the entities your SmartEVSE already publishes over MQTT. You can add more (for reconciliation, notifications, exports) after setup via the gear icon.",
+        "data": {
+          "name": "Name",
+          "state_sensor": "State sensor (e.g. sensor.smartevse_xxxx_state)",
+          "plug_sensor": "EV plug state sensor (evplugstate)",
+          "energy_sensor": "Cumulative imported energy / MID meter sensor (evimportactiveenergy)"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "A SmartEVSE with this name is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "SmartEVSE Session Logger settings",
+        "menu_options": {
+          "entities": "Extra entities (reconciliation, current, mode)",
+          "notifications": "Notifications",
+          "automation": "Checks & periodic export"
+        }
+      },
+      "entities": {
+        "title": "Extra entities",
+        "description": "Optional. Adding the EVSE's own lifetime energy counter enables the nightly completeness check.",
+        "data": {
+          "total_energy_sensor": "Total energy charged sensor (evtotalenergycharged) — enables the nightly check",
+          "current_sensor": "Charge current sensor — logged with each session for context",
+          "mode_entity": "Mode entity (e.g. select.smartevse_xxxx_mode) — logged with each session for context"
+        }
+      },
+      "notifications": {
+        "title": "Notifications",
+        "description": "Sent through an existing Home Assistant notify service, e.g. notify.email_me or notify.mobile_app_phone. A persistent notification in Home Assistant is always created for completeness-check issues, regardless of this setting.",
+        "data": {
+          "notify_enabled": "Send notifications",
+          "notify_service": "Notify service (e.g. notify.email_me)"
+        }
+      },
+      "automation": {
+        "title": "Checks & periodic export",
+        "data": {
+          "watchdog_enabled": "Hourly watchdog (recovers a session if a charging event was ever missed)",
+          "reconcile_enabled": "Nightly completeness check",
+          "reconcile_time": "Time to run the nightly check",
+          "reconcile_tolerance_kwh": "Allowed deviation before flagging (kWh)",
+          "export_enabled": "Automatically export & notify",
+          "export_frequency": "Export frequency",
+          "export_weekday": "Day of the week (weekly exports)",
+          "export_day_of_month": "Day of the month (monthly exports)",
+          "export_time": "Time to send the export"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "session_state": {
+        "name": "Session state",
+        "state": {
+          "idle": "Idle",
+          "connected_idle": "Connected",
+          "active": "Charging"
+        }
+      },
+      "last_session_energy": {
+        "name": "Last session energy"
+      },
+      "reconciliation": {
+        "name": "Completeness check",
+        "state": {
+          "unknown": "Unknown",
+          "ok": "OK",
+          "corrected": "Corrected",
+          "unresolved": "Unresolved"
+        }
+      }
+    },
+    "binary_sensor": {
+      "charging": {
+        "name": "Charging"
+      }
+    }
+  },
+  "selector": {
+    "export_frequency": {
+      "options": {
+        "weekly": "Weekly",
+        "monthly": "Monthly"
+      }
+    },
+    "weekday": {
+      "options": {
+        "0": "Monday",
+        "1": "Tuesday",
+        "2": "Wednesday",
+        "3": "Thursday",
+        "4": "Friday",
+        "5": "Saturday",
+        "6": "Sunday"
+      }
+    }
+  },
+  "services": {
+    "export_csv": {
+      "name": "Export sessions to CSV",
+      "description": "Writes a CSV of charge sessions for the given period to /config/www/smartevse_session_logger/ and returns the path, URL and totals.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Logger",
+          "description": "Which SmartEVSE Session Logger instance, if you have more than one."
+        },
+        "period": {
+          "name": "Period",
+          "description": "A preset period. Ignored if start_date and end_date are both given."
+        },
+        "start_date": {
+          "name": "Start date",
+          "description": "Start of a custom period (inclusive)."
+        },
+        "end_date": {
+          "name": "End date",
+          "description": "End of a custom period (inclusive)."
+        }
+      }
+    },
+    "force_reconciliation": {
+      "name": "Run completeness check now",
+      "description": "Runs the nightly completeness check immediately instead of waiting for its scheduled time.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Logger",
+          "description": "Which SmartEVSE Session Logger instance, if you have more than one."
+        }
+      }
+    }
+  }
+}

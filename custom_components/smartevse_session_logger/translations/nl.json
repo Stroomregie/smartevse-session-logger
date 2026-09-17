@@ -1,0 +1,144 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "SmartEVSE koppelen",
+        "description": "Kies de entiteiten die jouw SmartEVSE al via MQTT publiceert. Na het instellen kun je via het tandwiel-icoon nog meer entiteiten, meldingen en export-opties toevoegen.",
+        "data": {
+          "name": "Naam",
+          "state_sensor": "Status-sensor (bijv. sensor.smartevse_xxxx_state)",
+          "plug_sensor": "Stekker-status sensor (evplugstate)",
+          "energy_sensor": "Cumulatief geïmporteerde energie / MID-meter sensor (evimportactiveenergy)"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Er is al een SmartEVSE met deze naam geconfigureerd."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "SmartEVSE Session Logger instellingen",
+        "menu_options": {
+          "entities": "Extra entiteiten (reconciliatie, stroom, modus)",
+          "notifications": "Meldingen",
+          "automation": "Controles & periodieke export"
+        }
+      },
+      "entities": {
+        "title": "Extra entiteiten",
+        "description": "Optioneel. Met de eigen lifetime-energieteller van de EVSE wordt de nachtelijke volledigheidscontrole geactiveerd.",
+        "data": {
+          "total_energy_sensor": "Totaal geladen energie sensor (evtotalenergycharged) — activeert de nachtelijke controle",
+          "current_sensor": "Laadstroom sensor — wordt gelogd bij elke sessie",
+          "mode_entity": "Modus-entiteit (bijv. select.smartevse_xxxx_mode) — wordt gelogd bij elke sessie"
+        }
+      },
+      "notifications": {
+        "title": "Meldingen",
+        "description": "Wordt verstuurd via een bestaande Home Assistant notify-service, bijv. notify.email_sander of notify.mobile_app_telefoon. Bij problemen met de volledigheidscontrole wordt altijd ook een persistent notification in Home Assistant aangemaakt, ongeacht deze instelling.",
+        "data": {
+          "notify_enabled": "Meldingen versturen",
+          "notify_service": "Notify-service (bijv. notify.email_sander)"
+        }
+      },
+      "automation": {
+        "title": "Controles & periodieke export",
+        "data": {
+          "watchdog_enabled": "Uurlijkse watchdog (herstelt een sessie als een laadgebeurtenis ooit gemist is)",
+          "reconcile_enabled": "Nachtelijke volledigheidscontrole",
+          "reconcile_time": "Tijdstip van de nachtelijke controle",
+          "reconcile_tolerance_kwh": "Toegestane afwijking voordat er gemeld wordt (kWh)",
+          "export_enabled": "Automatisch exporteren & melden",
+          "export_frequency": "Exportfrequentie",
+          "export_weekday": "Dag van de week (wekelijkse export)",
+          "export_day_of_month": "Dag van de maand (maandelijkse export)",
+          "export_time": "Tijdstip van versturen"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "session_state": {
+        "name": "Sessiestatus",
+        "state": {
+          "idle": "Inactief",
+          "connected_idle": "Aangesloten",
+          "active": "Aan het laden"
+        }
+      },
+      "last_session_energy": {
+        "name": "Energie laatste sessie"
+      },
+      "reconciliation": {
+        "name": "Volledigheidscontrole",
+        "state": {
+          "unknown": "Onbekend",
+          "ok": "OK",
+          "corrected": "Gecorrigeerd",
+          "unresolved": "Onopgelost"
+        }
+      }
+    },
+    "binary_sensor": {
+      "charging": {
+        "name": "Aan het laden"
+      }
+    }
+  },
+  "selector": {
+    "export_frequency": {
+      "options": {
+        "weekly": "Wekelijks",
+        "monthly": "Maandelijks"
+      }
+    },
+    "weekday": {
+      "options": {
+        "0": "Maandag",
+        "1": "Dinsdag",
+        "2": "Woensdag",
+        "3": "Donderdag",
+        "4": "Vrijdag",
+        "5": "Zaterdag",
+        "6": "Zondag"
+      }
+    }
+  },
+  "services": {
+    "export_csv": {
+      "name": "Sessies exporteren naar CSV",
+      "description": "Schrijft een CSV van laadsessies over de opgegeven periode naar /config/www/smartevse_session_logger/ en geeft het pad, de URL en totalen terug.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Logger",
+          "description": "Welke SmartEVSE Session Logger-instantie, als je er meerdere hebt."
+        },
+        "period": {
+          "name": "Periode",
+          "description": "Een vaste periode. Wordt genegeerd als start_date en end_date beide zijn ingevuld."
+        },
+        "start_date": {
+          "name": "Startdatum",
+          "description": "Begin van een aangepaste periode (inclusief)."
+        },
+        "end_date": {
+          "name": "Einddatum",
+          "description": "Einde van een aangepaste periode (inclusief)."
+        }
+      }
+    },
+    "force_reconciliation": {
+      "name": "Volledigheidscontrole nu uitvoeren",
+      "description": "Voert de nachtelijke volledigheidscontrole direct uit in plaats van op het geplande tijdstip te wachten.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Logger",
+          "description": "Welke SmartEVSE Session Logger-instantie, als je er meerdere hebt."
+        }
+      }
+    }
+  }
+}

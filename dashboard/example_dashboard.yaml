@@ -1,0 +1,68 @@
+# Example Lovelace view for SmartEVSE Session Logger.
+#
+# How to use:
+#   1. Home Assistant → Settings → Dashboards → Add Dashboard → "New dashboard from scratch".
+#   2. Open the new dashboard, three-dot menu (top right) → Edit Dashboard.
+#   3. Three-dot menu again → "Edit in YAML", delete the placeholder content and
+#      paste the content below (everything under `views:`).
+#   4. If you changed the "Name" during setup (default "SmartEVSE"), replace
+#      every `smartevse_` entity_id below with your own device's slug — check
+#      Settings → Devices & Services → SmartEVSE Session Logger → your device
+#      to see the exact entity IDs.
+#
+views:
+  - title: EV laden
+    path: ev-laden
+    icon: mdi:ev-station
+    cards:
+      - type: entities
+        title: Status
+        entities:
+          - entity: binary_sensor.smartevse_charging
+            name: Aan het laden
+          - entity: sensor.smartevse_session_state
+            name: Sessiestatus
+          - entity: sensor.smartevse_reconciliation
+            name: Volledigheidscontrole
+
+      - type: entities
+        title: Laatste sessie
+        entities:
+          - entity: sensor.smartevse_last_session_energy
+            name: Geladen energie
+          - type: attribute
+            entity: sensor.smartevse_last_session_energy
+            attribute: start
+            name: Start
+          - type: attribute
+            entity: sensor.smartevse_last_session_energy
+            attribute: end
+            name: Einde
+          - type: attribute
+            entity: sensor.smartevse_last_session_energy
+            attribute: end_reason
+            name: Reden einde
+
+      - type: history-graph
+        title: Laadmomenten (7 dagen)
+        hours_to_show: 168
+        entities:
+          - entity: binary_sensor.smartevse_charging
+
+      - type: markdown
+        title: Export
+        content: >
+          Gebruik de knop hieronder om een CSV van de laadsessies van de
+          afgelopen maand te genereren. Het bestand komt te staan in
+          `config/www/smartevse_session_logger/` en is downloadbaar via de
+          link in het "Logbook"/Developer Tools resultaat van de service-aanroep.
+
+      - type: button
+        name: Exporteer vorige maand naar CSV
+        icon: mdi:file-export-outline
+        tap_action:
+          action: perform-action
+          perform_action: smartevse_session_logger.export_csv
+          target: {}
+          data:
+            period: last_month
