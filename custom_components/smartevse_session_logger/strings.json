@@ -7,8 +7,8 @@
         "data": {
           "name": "Name",
           "state_sensor": "State sensor (e.g. sensor.smartevse_xxxx_state)",
-          "plug_sensor": "EV plug state sensor (e.g. sensor.smartevse_xxxx_evplugstate)",
-          "energy_sensor": "Cumulative imported energy / MID meter sensor (e.g. sensor.smartevse_xxxx_evimportactiveenergy)"
+          "plug_sensor": "EV plug sensor (e.g. sensor.smartevse_xxxx_evplugstate)",
+          "energy_sensor": "MID energy sensor (e.g. sensor.smartevse_xxxx_evimportactiveenergy)"
         }
       }
     },
@@ -28,11 +28,11 @@
       },
       "entities": {
         "title": "Extra entities",
-        "description": "All optional, and all named sensor.smartevse_xxxx_... just like the ones you picked during setup (same xxxx, same device). Adding the total energy sensor enables the nightly completeness check.",
+        "description": "All optional, and all named sensor.smartevse_xxxx_... just like the ones you picked during setup (same xxxx, same device). Total energy enables the nightly completeness check; current and mode are just logged as context with each session.",
         "data": {
-          "total_energy_sensor": "Total energy charged sensor (e.g. sensor.smartevse_xxxx_evtotalenergycharged) — enables the nightly completeness check",
-          "current_sensor": "Charge current sensor (e.g. sensor.smartevse_xxxx_chargecurrent) — logged with each session for context",
-          "mode_entity": "Mode entity (e.g. select.smartevse_xxxx_mode) — logged with each session for context"
+          "total_energy_sensor": "Total energy sensor (e.g. sensor.smartevse_xxxx_evtotalenergycharged)",
+          "current_sensor": "Current sensor (e.g. sensor.smartevse_xxxx_chargecurrent)",
+          "mode_entity": "Mode entity (e.g. select.smartevse_xxxx_mode)"
         }
       },
       "notifications": {

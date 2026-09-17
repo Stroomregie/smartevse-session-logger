@@ -7,8 +7,8 @@
         "data": {
           "name": "Naam",
           "state_sensor": "Status-sensor (bijv. sensor.smartevse_xxxx_state)",
-          "plug_sensor": "Stekker-status sensor (bijv. sensor.smartevse_xxxx_evplugstate)",
-          "energy_sensor": "Cumulatief geïmporteerde energie / MID-meter sensor (bijv. sensor.smartevse_xxxx_evimportactiveenergy)"
+          "plug_sensor": "Stekker-sensor (bijv. sensor.smartevse_xxxx_evplugstate)",
+          "energy_sensor": "MID-energiesensor (bijv. sensor.smartevse_xxxx_evimportactiveenergy)"
         }
       }
     },
@@ -28,11 +28,11 @@
       },
       "entities": {
         "title": "Extra entiteiten",
-        "description": "Allemaal optioneel, en allemaal met een naam sensor.smartevse_xxxx_..., net als de entiteiten die je bij het instellen al koos (zelfde xxxx, zelfde apparaat). Met de totaal-energie sensor wordt de nachtelijke volledigheidscontrole geactiveerd.",
+        "description": "Allemaal optioneel, en allemaal met een naam sensor.smartevse_xxxx_..., net als de entiteiten die je bij het instellen al koos (zelfde xxxx, zelfde apparaat). Totaal-energie activeert de nachtelijke volledigheidscontrole; stroom en modus worden alleen als context gelogd bij elke sessie.",
         "data": {
-          "total_energy_sensor": "Totaal geladen energie sensor (bijv. sensor.smartevse_xxxx_evtotalenergycharged) — activeert de nachtelijke volledigheidscontrole",
-          "current_sensor": "Laadstroom sensor (bijv. sensor.smartevse_xxxx_chargecurrent) — wordt gelogd bij elke sessie",
-          "mode_entity": "Modus-entiteit (bijv. select.smartevse_xxxx_mode) — wordt gelogd bij elke sessie"
+          "total_energy_sensor": "Totaal-energiesensor (bijv. sensor.smartevse_xxxx_evtotalenergycharged)",
+          "current_sensor": "Stroomsensor (bijv. sensor.smartevse_xxxx_chargecurrent)",
+          "mode_entity": "Modus-entiteit (bijv. select.smartevse_xxxx_mode)"
         }
       },
       "notifications": {
