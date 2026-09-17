@@ -79,14 +79,16 @@ class SmartEvseSessionLoggerConfigFlow(ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(config_entry: ConfigEntry) -> "OptionsFlowHandler":
-        return OptionsFlowHandler(config_entry)
+        return OptionsFlowHandler()
 
 
 class OptionsFlowHandler(OptionsFlow):
-    """Adjust optional entities, notifications and scheduled checks after setup."""
+    """Adjust optional entities, notifications and scheduled checks after setup.
 
-    def __init__(self, config_entry: ConfigEntry) -> None:
-        self.config_entry = config_entry
+    No __init__/config_entry assignment here on purpose: since HA 2024.12,
+    self.config_entry is injected by the flow manager, and manually setting
+    it raises (config_entry is a read-only property on the base class).
+    """
 
     def _current(self, key: str, default: Any = None) -> Any:
         return self.config_entry.options.get(

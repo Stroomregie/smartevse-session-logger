@@ -69,7 +69,7 @@ just listens, records it reliably, and makes it exportable.
   you haven't set this up yet.
 - A Modbus-coupled **MID meter** on the SmartEVSE, so it exposes a cumulative
   imported-energy sensor (commonly named `..._evimportactiveenergy`).
-- Home Assistant 2024.1 or newer.
+- Home Assistant 2024.12 or newer.
 - (Optional, for the nightly completeness check) the SmartEVSE's own lifetime
   "total energy charged" sensor (commonly `..._evtotalenergycharged`).
 - (Optional, for notifications/exports by email or push) an existing
