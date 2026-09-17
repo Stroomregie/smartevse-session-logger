@@ -3,12 +3,12 @@
     "step": {
       "user": {
         "title": "Connect your SmartEVSE",
-        "description": "Pick the entities your SmartEVSE already publishes over MQTT. You can add more (for reconciliation, notifications, exports) after setup via the gear icon.",
+        "description": "Your SmartEVSE publishes entities named like sensor.smartevse_xxxx_..., where xxxx is your own device's number (e.g. 7442 — yours will differ). Pick the matching ones below. You can add more (for the completeness check, notifications, exports) after setup via the gear icon.",
         "data": {
           "name": "Name",
           "state_sensor": "State sensor (e.g. sensor.smartevse_xxxx_state)",
-          "plug_sensor": "EV plug state sensor (evplugstate)",
-          "energy_sensor": "Cumulative imported energy / MID meter sensor (evimportactiveenergy)"
+          "plug_sensor": "EV plug state sensor (e.g. sensor.smartevse_xxxx_evplugstate)",
+          "energy_sensor": "Cumulative imported energy / MID meter sensor (e.g. sensor.smartevse_xxxx_evimportactiveenergy)"
         }
       }
     },
@@ -28,19 +28,19 @@
       },
       "entities": {
         "title": "Extra entities",
-        "description": "Optional. Adding the EVSE's own lifetime energy counter enables the nightly completeness check.",
+        "description": "All optional, and all named sensor.smartevse_xxxx_... just like the ones you picked during setup (same xxxx, same device). Adding the total energy sensor enables the nightly completeness check.",
         "data": {
-          "total_energy_sensor": "Total energy charged sensor (evtotalenergycharged) — enables the nightly check",
-          "current_sensor": "Charge current sensor — logged with each session for context",
+          "total_energy_sensor": "Total energy charged sensor (e.g. sensor.smartevse_xxxx_evtotalenergycharged) — enables the nightly completeness check",
+          "current_sensor": "Charge current sensor (e.g. sensor.smartevse_xxxx_chargecurrent) — logged with each session for context",
           "mode_entity": "Mode entity (e.g. select.smartevse_xxxx_mode) — logged with each session for context"
         }
       },
       "notifications": {
         "title": "Notifications",
-        "description": "Sent through an existing Home Assistant notify service, e.g. notify.email_me or notify.mobile_app_phone. A persistent notification in Home Assistant is always created for completeness-check issues, regardless of this setting.",
+        "description": "Optional. Pick one of the notify services already available on this Home Assistant (e.g. a mobile app push, or an email/SMTP notify integration you've set up) — the dropdown lists what you actually have. Leave 'Send notifications' off if you don't want any: completeness-check issues always show up as a Home Assistant persistent notification regardless of this setting.",
         "data": {
           "notify_enabled": "Send notifications",
-          "notify_service": "Notify service (e.g. notify.email_me)"
+          "notify_service": "Notify service"
         }
       },
       "automation": {

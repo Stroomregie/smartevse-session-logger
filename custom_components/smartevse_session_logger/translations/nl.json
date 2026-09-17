@@ -3,12 +3,12 @@
     "step": {
       "user": {
         "title": "SmartEVSE koppelen",
-        "description": "Kies de entiteiten die jouw SmartEVSE al via MQTT publiceert. Na het instellen kun je via het tandwiel-icoon nog meer entiteiten, meldingen en export-opties toevoegen.",
+        "description": "Jouw SmartEVSE publiceert entiteiten met namen als sensor.smartevse_xxxx_..., waarbij xxxx het nummer van jouw eigen apparaat is (bijv. 7442 — bij jou is dit anders). Kies hieronder de bijpassende. Na het instellen kun je via het tandwiel-icoon nog meer entiteiten, meldingen en export-opties toevoegen.",
         "data": {
           "name": "Naam",
           "state_sensor": "Status-sensor (bijv. sensor.smartevse_xxxx_state)",
-          "plug_sensor": "Stekker-status sensor (evplugstate)",
-          "energy_sensor": "Cumulatief geïmporteerde energie / MID-meter sensor (evimportactiveenergy)"
+          "plug_sensor": "Stekker-status sensor (bijv. sensor.smartevse_xxxx_evplugstate)",
+          "energy_sensor": "Cumulatief geïmporteerde energie / MID-meter sensor (bijv. sensor.smartevse_xxxx_evimportactiveenergy)"
         }
       }
     },
@@ -28,19 +28,19 @@
       },
       "entities": {
         "title": "Extra entiteiten",
-        "description": "Optioneel. Met de eigen lifetime-energieteller van de EVSE wordt de nachtelijke volledigheidscontrole geactiveerd.",
+        "description": "Allemaal optioneel, en allemaal met een naam sensor.smartevse_xxxx_..., net als de entiteiten die je bij het instellen al koos (zelfde xxxx, zelfde apparaat). Met de totaal-energie sensor wordt de nachtelijke volledigheidscontrole geactiveerd.",
         "data": {
-          "total_energy_sensor": "Totaal geladen energie sensor (evtotalenergycharged) — activeert de nachtelijke controle",
-          "current_sensor": "Laadstroom sensor — wordt gelogd bij elke sessie",
+          "total_energy_sensor": "Totaal geladen energie sensor (bijv. sensor.smartevse_xxxx_evtotalenergycharged) — activeert de nachtelijke volledigheidscontrole",
+          "current_sensor": "Laadstroom sensor (bijv. sensor.smartevse_xxxx_chargecurrent) — wordt gelogd bij elke sessie",
           "mode_entity": "Modus-entiteit (bijv. select.smartevse_xxxx_mode) — wordt gelogd bij elke sessie"
         }
       },
       "notifications": {
         "title": "Meldingen",
-        "description": "Wordt verstuurd via een bestaande Home Assistant notify-service, bijv. notify.email_sander of notify.mobile_app_telefoon. Bij problemen met de volledigheidscontrole wordt altijd ook een persistent notification in Home Assistant aangemaakt, ongeacht deze instelling.",
+        "description": "Optioneel. Kies een van de notify-services die al beschikbaar zijn op deze Home Assistant (bijv. een mobiele-app-melding, of een e-mail/SMTP notify-integratie die je hebt ingesteld) — de keuzelijst toont wat je daadwerkelijk hebt. Laat 'Meldingen versturen' uit als je dat niet wilt: problemen uit de volledigheidscontrole verschijnen sowieso altijd als persistent notification in Home Assistant, ongeacht deze instelling.",
         "data": {
           "notify_enabled": "Meldingen versturen",
-          "notify_service": "Notify-service (bijv. notify.email_sander)"
+          "notify_service": "Notify-service"
         }
       },
       "automation": {

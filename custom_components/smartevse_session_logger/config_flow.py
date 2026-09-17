@@ -6,7 +6,7 @@ from typing import Any
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry, ConfigFlow, OptionsFlow
-from homeassistant.core import callback
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import selector
 from homeassistant.util import slugify
 
@@ -49,6 +49,12 @@ def _entity_selector(domain: str | None = "sensor") -> selector.Selector:
     if domain is None:
         return selector.EntitySelector(selector.EntitySelectorConfig())
     return selector.EntitySelector(selector.EntitySelectorConfig(domain=domain))
+
+
+def _available_notify_services(hass: HomeAssistant) -> list[str]:
+    """List notify.* services actually registered on this HA instance."""
+    names = sorted(hass.services.async_services().get("notify", {}))
+    return [f"notify.{name}" for name in names]
 
 
 class SmartEvseSessionLoggerConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -146,18 +152,16 @@ class OptionsFlowHandler(OptionsFlow):
                 vol.Optional(
                     CONF_NOTIFY_SERVICE,
                     description={"suggested_value": self._current(CONF_NOTIFY_SERVICE)},
-                ): selector.TextSelector(
-                    selector.TextSelectorConfig(
-                        type=selector.TextSelectorType.TEXT
+                ): selector.SelectSelector(
+                    selector.SelectSelectorConfig(
+                        options=_available_notify_services(self.hass),
+                        custom_value=True,
+                        mode=selector.SelectSelectorMode.DROPDOWN,
                     )
                 ),
             }
         )
-        return self.async_show_form(
-            step_id="notifications",
-            data_schema=schema,
-            description_placeholders={"example": "notify.email_sander"},
-        )
+        return self.async_show_form(step_id="notifications", data_schema=schema)
 
     async def async_step_automation(
         self, user_input: dict[str, Any] | None = None
