@@ -1,7 +1,7 @@
 {
   "domain": "smartevse_session_logger",
   "name": "SmartEVSE Session Logger",
-  "codeowners": ["@SanderQlik"],
+  "codeowners": ["@Stroomregie"],
   "config_flow": true,
   "documentation": "https://github.com/Stroomregie/smartevse-session-logger",
   "issue_tracker": "https://github.com/Stroomregie/smartevse-session-logger/issues",

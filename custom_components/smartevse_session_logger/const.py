@@ -64,3 +64,9 @@ END_REASON_WATCHDOG_RECOVERY = "watchdog_recovered"
 WATCHDOG_INTERVAL_MINUTES = 60
 
 EXPORT_DIR = "smartevse_session_logger"
+
+# --- Events fired on the HA bus, for your own automations to hook into ---
+# (e.g. to attach car-specific data such as a Tesla BLE state-of-charge
+# reading, without this integration needing to know about any car brand)
+EVENT_SESSION_STARTED = f"{DOMAIN}_session_started"
+EVENT_SESSION_ENDED = f"{DOMAIN}_session_ended"

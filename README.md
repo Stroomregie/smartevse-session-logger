@@ -240,11 +240,81 @@ fully independent (own storage, own entities, own schedule). Services that
 can target a specific one accept an optional `config_entry_id`; if you only
 have one, it's picked automatically.
 
-## Data & privacy
+## Where your data is stored
 
-Everything lives locally in your Home Assistant: session history in
-`.storage/`, CSV exports in `www/smartevse_session_logger/`. Nothing is sent
-anywhere except through the `notify.*` service *you* configure.
+Nothing is written loose into your `config/` root:
+
+- Session history (the actual log) lives in Home Assistant's own
+  `.storage/smartevse_session_logger_<entry_id>` — the standard place every
+  HA integration keeps its state, namespaced by filename so it never mixes
+  with anything else.
+- CSV exports are written to `config/www/smartevse_session_logger/`, so they
+  live in their own subfolder under `www/`, not scattered through it.
+
+Nothing is sent anywhere except through the `notify.*` service *you*
+configure.
+
+## Running alongside an existing DIY session logger
+
+If you already have your own automations logging SmartEVSE sessions (for
+example tied to a car-specific integration for state-of-charge), you can
+install this integration **side by side** without any risk to your existing
+setup. It only *reads* the SmartEVSE entities you point it at — it never
+writes to them — and it uses its own domain (`smartevse_session_logger`),
+its own `.storage/` file and its own entities. It does not know about, and
+cannot touch, any pre-existing helpers, automations, or log files your own
+setup already has.
+
+That makes it safe to run both in parallel for a while — e.g. to compare
+your existing log against this one before deciding whether to keep both (one
+for detailed per-brand data, one as the authoritative export source) or
+retire the old one. As with any new custom integration, taking a Home
+Assistant backup first is still good practice — not because this
+integration touches your existing data, but so you always have a clean
+rollback point.
+
+One thing to expect: session *boundaries* may differ slightly between the
+two loggers if your existing setup ends a session based on car-reported
+signals (e.g. "charging complete" from the car) rather than the SmartEVSE's
+own state. This integration only ends a session when the SmartEVSE itself
+reports it stopped charging or the cable was disconnected — which is
+arguably more accurate for MID/ERE purposes, since it reflects actual
+current flow rather than the car's own reporting.
+
+## Extending with car-specific data (e.g. Tesla BLE state-of-charge)
+
+This integration deliberately never looks at the car — no SOC, no brand —
+because there's no reliable, brand-agnostic way to do that, and getting it
+wrong would undermine trust in the log. But if *you* have a car integration
+that exposes SOC, you can layer that on top yourself with a plain
+automation in your own config, using the events this integration fires on
+the Home Assistant bus:
+
+- `smartevse_session_logger_session_started`
+- `smartevse_session_logger_session_ended`
+
+Both carry the full session record as event data (`session_id`, `start`/
+`end`, `energy_start_kwh`/`energy_end_kwh`/`energy_kwh`, `end_reason`, ...).
+For example, to log the Tesla's SOC alongside each session without ever
+touching this integration's code:
+
+```yaml
+automation:
+  - alias: "Log Tesla SOC at SmartEVSE session start"
+    triggers:
+      - trigger: event
+        event_type: smartevse_session_logger_session_started
+    actions:
+      - action: logbook.log
+        data:
+          name: "EV sessie {{ trigger.event.data.session_id }}"
+          message: >
+            Start SOC: {{ states('sensor.tesla_ble_charge_level') }}%
+            (limiet {{ states('sensor.tesla_ble_charge_limit') }}%)
+```
+
+This keeps the community package universal while letting your own setup
+stay as detailed as you like.
 
 ## Contributing
 

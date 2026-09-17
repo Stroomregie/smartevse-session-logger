@@ -30,6 +30,8 @@ from .const import (
     END_REASON_CHARGING_STOPPED,
     END_REASON_DISCONNECTED,
     END_REASON_WATCHDOG_RECOVERY,
+    EVENT_SESSION_ENDED,
+    EVENT_SESSION_STARTED,
     EVSE_STATE_CHARGING,
     EXPORT_DIR,
     PLUG_STATE_CONNECTED,
@@ -278,6 +280,10 @@ class SessionManager:
         self.sessions.append(session)
         await self._async_save()
         _LOGGER.info("SmartEVSE session %s started", session_id)
+        self.hass.bus.async_fire(
+            EVENT_SESSION_STARTED,
+            {"entry_id": self.entry.entry_id, **session},
+        )
         if recovered:
             await self.async_notify(
                 f"⚠️ {self.entry.data.get(CONF_NAME, 'SmartEVSE')} logging herstel",
@@ -305,6 +311,10 @@ class SessionManager:
             session["id"],
             reason,
             session.get("energy_kwh"),
+        )
+        self.hass.bus.async_fire(
+            EVENT_SESSION_ENDED,
+            {"entry_id": self.entry.entry_id, **session},
         )
 
     # ------------------------------------------------------------------ #
