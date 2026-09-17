@@ -153,7 +153,7 @@ it):
 | `sensor.smartevse_session_state` | `idle` / `connected_idle` / `active`. Attributes include the in-progress session's id, start time and start kWh. |
 | `binary_sensor.smartevse_charging` | On while a session is actively being logged. |
 | `sensor.smartevse_last_session_energy` | kWh of the most recently *completed* session, with full session details as attributes (start, end, end reason, reconciliation status, ...). |
-| `sensor.smartevse_reconciliation` | `unknown` / `ok` / `corrected` / `unresolved` — result of the last nightly completeness check, with the full report text as an attribute. |
+| `sensor.smartevse_completeness_check` | `unknown` / `ok` / `corrected` / `unresolved` — result of the last nightly completeness check, with the full report text as an attribute. |
 
 ## Services
 
@@ -231,7 +231,7 @@ session log).
      the watchdog had a chance to recover it).
 
 The full reasoning for the last run is always available as the
-`report_text` attribute on `sensor.smartevse_reconciliation`.
+`report_text` attribute on `sensor.smartevse_completeness_check`.
 
 ## Multiple SmartEVSEs
 

@@ -22,7 +22,7 @@ views:
             name: Aan het laden
           - entity: sensor.smartevse_session_state
             name: Sessiestatus
-          - entity: sensor.smartevse_reconciliation
+          - entity: sensor.smartevse_completeness_check
             name: Volledigheidscontrole
 
       - type: entities
