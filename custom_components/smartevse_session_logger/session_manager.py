@@ -4,6 +4,7 @@ from __future__ import annotations
 import csv
 import io
 import logging
+import re
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -47,6 +48,12 @@ _LOGGER = logging.getLogger(__name__)
 
 SIGNAL_UPDATE = f"{DOMAIN}_update"
 
+# Matches the standard SmartEVSE-3 MQTT discovery entity naming, e.g.
+# "sensor.smartevse_7442_state" -> "7442". Used to key exports by the
+# SmartEVSE's own number instead of the free-text name a user picked, so two
+# SmartEVSEs never produce ambiguous or colliding export filenames.
+_SMARTEVSE_DEVICE_ID_RE = re.compile(r"^sensor\.smartevse_(?P<device_id>.+?)_state$")
+
 
 def _float_state(hass: HomeAssistant, entity_id: str | None) -> float | None:
     """Read an entity's state as a float, or None if unavailable/unset."""
@@ -78,6 +85,7 @@ class SessionManager:
         self.entry = entry
         self.slug = slugify(entry.data.get(CONF_NAME) or "smartevse")
         self.store: Store = Store(hass, STORAGE_VERSION, f"{DOMAIN}_{entry.entry_id}")
+        self._device_id = self._extract_device_id()
         self._data: dict[str, Any] = {"sessions": [], "reconciliation": {}}
         self._unsub_listeners: list[Any] = []
 
@@ -91,6 +99,21 @@ class SessionManager:
     @property
     def state_sensor(self) -> str:
         return self.entry.data[CONF_STATE_SENSOR]
+
+    def _extract_device_id(self) -> str:
+        """The SmartEVSE's own number, e.g. "7442" from "sensor.smartevse_7442_state".
+
+        Falls back to the slugified name if the state sensor doesn't follow the
+        standard SmartEVSE-3 naming (e.g. it was renamed by the user).
+        """
+        match = _SMARTEVSE_DEVICE_ID_RE.match(self.entry.data[CONF_STATE_SENSOR])
+        if match:
+            return match.group("device_id")
+        return self.slug
+
+    @property
+    def device_id(self) -> str:
+        return self._device_id
 
     @property
     def plug_sensor(self) -> str:
@@ -501,7 +524,7 @@ class SessionManager:
         csv_text, sessions = self.build_csv(start, end)
         target_dir = Path(self.hass.config.path("www")) / EXPORT_DIR
         target_dir.mkdir(parents=True, exist_ok=True)
-        filename = f"{self.slug}_{start.date()}_{end.date()}.csv"
+        filename = f"smartevse_{self.device_id}_{start.date()}_{end.date()}.csv"
         target_path = target_dir / filename
 
         def _write() -> None:

@@ -163,6 +163,12 @@ Writes a semicolon-separated CSV (importable directly in Excel/NL locale) of
 sessions for a period to `config/www/smartevse_session_logger/` and returns
 the path, a URL, the row count and total kWh.
 
+The filename is keyed by the SmartEVSE's own number, not the name you gave it
+during setup — e.g. `smartevse_7442_2026-01-01_2026-01-31.csv` for the
+SmartEVSE behind `sensor.smartevse_7442_state`. That keeps exports from two
+or more SmartEVSEs on the same Home Assistant unambiguous even if you gave
+them similar display names.
+
 ```yaml
 action: smartevse_session_logger.export_csv
 data:
