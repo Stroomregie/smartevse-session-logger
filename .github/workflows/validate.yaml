@@ -2,7 +2,7 @@ name: Validate
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   pull_request:
   schedule:
     - cron: "0 3 * * *"
@@ -22,3 +22,6 @@ jobs:
       - uses: hacs/action@main
         with:
           category: integration
+          # brands: requires a PR to github.com/home-assistant/brands, a
+          # separate, externally-reviewed repo — tracked, not fixable here.
+          ignore: "brands"
